@@ -25,7 +25,8 @@ models:
       +materialized: table
       +on_schema_change: "sync_all_columns"
       +pre-hook:
-        - "CREATE SCHEMA IF NOT EXISTS SALES_DB.TRANSFORM_DATA"
+    - "{{ ensure_staging_views_exist() }}"
+    - "CREATE SCHEMA IF NOT EXISTS SALES_DB.TRANSFORM_DATA"
 
     analytics:
       +schema: "ANALYTICS"
