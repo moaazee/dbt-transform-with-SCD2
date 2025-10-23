@@ -1,1 +1,26 @@
+name: dbt run & test
 
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  dbt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dbt
+        run: pip install dbt-snowflake
+      - name: Install packages
+        run: dbt deps
+      - name: Build changed only (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: dbt build --select state:modified+ --state target
+      - name: Run full build (push)
+        if: ${{ github.event_name == 'push' }}
+        run: dbt run && dbt test
