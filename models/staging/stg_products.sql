@@ -15,4 +15,4 @@ cleaned as (
   from source
   where product_id is not null
 )
-select * from cleaned;
+select * from cleaned
