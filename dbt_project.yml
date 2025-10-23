@@ -1,29 +1,39 @@
 name: 'leap_case'
 version: '2.0.0'
 config-version: 2
-profile: 'leap_case'  # Points to SALES_DB in your profiles.yml
+
+# This must match the profile key in profiles.yml
+profile: 'leap_case'
+
 models:
   leap_case:
     +materialized: view
+
     staging:
-      +schema: STAGING
+      +schema: STAGING               
       +materialized: view
       +on_schema_change: "sync_all_columns"
-      +post-hook:
-        - "CREATE SCHEMA IF NOT EXISTS {{ target.database }}.STAGING"
+      +pre-hook:
+        - "CREATE SCHEMA IF NOT EXISTS SALES_DB.STAGING"
+
     transform_data:
-      +schema: TRANSFORM_DATA
+      +schema: TRANSFORM_DATA       
       +materialized: table
       +on_schema_change: "sync_all_columns"
+      +pre-hook:
+        - "CREATE SCHEMA IF NOT EXISTS SALES_DB.TRANSFORM_DATA"
+
     analytics:
-      +schema: ANALYTICS
+      +schema: ANALYTICS             
       +materialized: table
       +on_schema_change: "sync_all_columns"
+      +pre-hook:
+        - "CREATE SCHEMA IF NOT EXISTS SALES_DB.ANALYTICS"
+
 quoting:
   database: false
   schema: false
   identifier: false
-
 
 macro-paths: ["macros"]
 seed-paths: ["seeds"]
