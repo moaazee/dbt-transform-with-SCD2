@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: dim_customers
+    columns:
+      - name: customer_key
+        tests: [not_null, unique]
+      - name: customer_id
+        tests: [not_null]
+
+  - name: dim_manufacturers
+    columns:
+      - name: manufacturer_key
+        tests: [not_null, unique]
+      - name: manufacturer_id
+        tests: [not_null]
+
+  - name: dim_products
+    columns:
+      - name: product_key
+        tests: [not_null, unique]
+      - name: product_id
+        tests: [not_null]
+      - name: manufacturer_id
+        tests:
+          - relationships:
+              to: ref('dim_manufacturers')
+              field: manufacturer_id
+
+  - name: dim_inventory
+    columns:
+      - name: inventory_key
+        tests: [not_null, unique]
+      - name: inventory_id
+        tests: [not_null]
+      - name: product_id
+        tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+
+  - name: fact_sales
+    columns:
+      - name: sale_id
+        tests: [not_null, unique]
+      - name: customer_key
+        tests:
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_key
+
+  - name: fact_sales_line_items
+    columns:
+      - name: sale_item_id
+        tests: [not_null, unique]
+      - name: sale_id
+        tests:
+          - relationships:
+              to: ref('fact_sales')
+              field: sale_id
+      - name: product_key
+        tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_key
