@@ -52,4 +52,4 @@ select * from (
   from curr c join changes ch on c.product_id = ch.product_id
   union all
   select * from changes
-) final;
+) final
