@@ -49,4 +49,4 @@ select * from (
   from curr c join changes ch on c.inventory_id = ch.inventory_id
   union all
   select * from changes
-) final;
+) final
