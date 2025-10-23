@@ -19,4 +19,4 @@ select
   s.payment_method,
   s.invoice_number
 from s
-left join dc using (customer_id);
+left join dc using (customer_id)
