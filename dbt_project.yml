@@ -1,9 +1,9 @@
-name: 'dwh_transform'
+name: 'leap_case'
 version: '2.0.0'
 config-version: 2
 
 # This must match the profile key in profiles.yml
-profile: 'dwh_transform'
+profile: 'leap_case'
 
 models:
   leap_case:
