@@ -13,4 +13,4 @@ cleaned as (
   from source
   where inventory_id is not null
 )
-select * from cleaned;
+select * from cleaned
