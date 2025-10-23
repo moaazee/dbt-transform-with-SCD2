@@ -11,15 +11,19 @@ jobs:
   run-dbt:
     runs-on: ubuntu-latest
     steps:
+      #  Checkout the repository
       - uses: actions/checkout@v4
 
+      #  Setup Python
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
+      #  Install dbt for Snowflake
       - name: Install dbt-snowflake
         run: pip install dbt-snowflake
 
+      #  Create dbt profile dynamically using GitHub secrets
       - name: Create profiles directory and file
         run: |
           mkdir -p ~/.dbt
@@ -40,14 +44,26 @@ jobs:
                 client_session_keep_alive: false
           EOF
 
+      #  Install required dbt packages (dbt_utils, etc.)
       - name: Install dbt dependencies
         run: dbt deps --profiles-dir ~/.dbt
 
+      #  Verify Snowflake connection
       - name: Verify dbt connection
         run: dbt debug --profiles-dir ~/.dbt
 
-      - name: Run dbt snapshot, build, and test
-        run: |
-          dbt snapshot --profiles-dir ~/.dbt
-          dbt run --profiles-dir ~/.dbt
-          dbt test --profiles-dir ~/.dbt
+      #  Run STAGING models first
+      - name: Run staging models
+        run: dbt run --select staging --profiles-dir ~/.dbt
+
+      #  Run snapshots (SCD2 history tracking)
+      - name: Run dbt snapshots
+        run: dbt snapshot --profiles-dir ~/.dbt
+
+      #  Run the rest of the dbt models (transform + analytics)
+      - name: Run dbt transformations and analytics
+        run: dbt run --profiles-dir ~/.dbt
+
+      #  Run dbt tests
+      - name: Run dbt tests
+        run: dbt test --profiles-dir ~/.dbt
