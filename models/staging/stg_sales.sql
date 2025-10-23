@@ -14,4 +14,4 @@ cleaned as (
   from source
   where sale_id is not null
 )
-select * from cleaned;
+select * from cleaned
