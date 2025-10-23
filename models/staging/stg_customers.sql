@@ -17,4 +17,4 @@ cleaned as (
   from source
   where customer_id is not null
 )
-select * from cleaned;
+select * from cleaned
