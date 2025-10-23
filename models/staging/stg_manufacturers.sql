@@ -13,4 +13,4 @@ cleaned as (
   from source
   where manufacturer_id is not null
 )
-select * from cleaned;
+select * from cleaned
