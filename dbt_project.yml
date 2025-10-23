@@ -1,30 +1,29 @@
 name: 'leap_case'
 version: '2.0.0'
 config-version: 2
-
-profile: 'leap_case'  # Ensure your ~/.dbt/profiles.yml points to SALES_DB
-
+profile: 'leap_case'  # Points to SALES_DB in your profiles.yml
 models:
   leap_case:
     +materialized: view
-
     staging:
       +schema: STAGING
       +materialized: view
-
+      +on_schema_change: "sync_all_columns"
+      +post-hook:
+        - "CREATE SCHEMA IF NOT EXISTS {{ target.database }}.STAGING"
     transform_data:
       +schema: TRANSFORM_DATA
       +materialized: table
       +on_schema_change: "sync_all_columns"
-
     analytics:
       +schema: ANALYTICS
       +materialized: table
-
+      +on_schema_change: "sync_all_columns"
 quoting:
   database: false
   schema: false
   identifier: false
+
 
 macro-paths: ["macros"]
 seed-paths: ["seeds"]
