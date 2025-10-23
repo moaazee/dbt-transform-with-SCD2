@@ -1,0 +1,6 @@
+version: 2
+
+models:
+  - name: customer_segmentation
+  - name: monthly_sales_by_warehouse
+  - name: top_products_by_revenue
