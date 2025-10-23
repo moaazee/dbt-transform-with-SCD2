@@ -18,4 +18,4 @@ select
   li.unit_price,
   coalesce(li.line_total_amount, li.quantity * li.unit_price) as line_total_amount
 from li
-left join dp using (product_id);
+left join dp using (product_id)
