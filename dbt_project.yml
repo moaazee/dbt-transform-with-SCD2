@@ -10,11 +10,15 @@ models:
     +materialized: view
 
     staging:
-      +schema: STAGING               
-      +materialized: view
-      +on_schema_change: "sync_all_columns"
-      +pre-hook:
-        - "CREATE SCHEMA IF NOT EXISTS SALES_DB.STAGING"
+  +schema: "STAGING"
+  +database: "SALES_DB"
+  +materialized: view
+  +on_schema_change: "sync_all_columns"
+  +pre-hook:
+    - "CREATE SCHEMA IF NOT EXISTS SALES_DB.STAGING"
+  +post-hook:
+    - "GRANT SELECT ON ALL VIEWS IN SCHEMA SALES_DB.STAGING TO ROLE {{ target.role }}"
+
 
     transform_data:
       +schema: TRANSFORM_DATA       
