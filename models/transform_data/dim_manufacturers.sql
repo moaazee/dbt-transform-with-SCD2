@@ -48,4 +48,4 @@ select * from (
   from curr c join changes ch on c.manufacturer_id = ch.manufacturer_id
   union all
   select * from changes
-) final;
+) final
