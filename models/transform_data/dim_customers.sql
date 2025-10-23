@@ -80,4 +80,4 @@ select * from (
 
   -- insert new versions
   select * from changes
-) final;
+) final
