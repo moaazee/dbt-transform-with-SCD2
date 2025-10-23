@@ -5,26 +5,26 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   run-dbt:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      
+          python-version: '3.11'
+
       - name: Install dbt-snowflake
         run: pip install dbt-snowflake
-      
+
       - name: Create profiles directory and file
         run: |
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml << EOF
-          dwh_transform:
+          leap_case:
             target: dev
             outputs:
               dev:
@@ -36,18 +36,18 @@ jobs:
                 database: ${{ secrets.SNOWFLAKE_DATABASE }}
                 warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
                 schema: ${{ secrets.SNOWFLAKE_SCHEMA }}
-                threads: 1
+                threads: 4
                 client_session_keep_alive: false
           EOF
-      
-      - name: Check packages.yml
-        run: cat packages.yml || echo "No packages.yml found"
-      
+
       - name: Install dbt dependencies
         run: dbt deps --profiles-dir ~/.dbt
-      
+
       - name: Verify dbt connection
         run: dbt debug --profiles-dir ~/.dbt
-      
-      - name: Run dbt models
-        run: dbt run --full-refresh --profiles-dir ~/.dbt
+
+      - name: Run dbt snapshot, build, and test
+        run: |
+          dbt snapshot --profiles-dir ~/.dbt
+          dbt run --profiles-dir ~/.dbt
+          dbt test --profiles-dir ~/.dbt
